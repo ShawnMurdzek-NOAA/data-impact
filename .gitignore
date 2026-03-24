@@ -1,0 +1,11 @@
+
+# Directories created when code is run
+figures
+logs
+pickle
+pickle_detail
+pyGSI/__pycache__
+__pycache__
+
+# Temporary files
+*swp

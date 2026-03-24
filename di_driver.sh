@@ -1,8 +1,8 @@
 #!/bin/sh
  
 # === User configuration ===
-YEAR=2024
-DATAPATH='/scratch4/BMC/wrfruc/llin/2025-zrtrr2/240601_misc/20241213-ncdiag-rrfs-full/rrfs/na/prod'
+YEAR=2022
+DATAPATH='/work2/noaa/wrfruc/murdzek/RRFS_OSSE/syn_data_rrfs-workflow_orion/winter/NCO_dirs/ptmp/prod'
 
 # please comment out one of them: 1) True, for the entire domain; 2) or a prescribed rectangular sub-domain
 DOMAIN_STR="True" 
@@ -17,13 +17,13 @@ SAVE_DETAIL="true"
 mkdir -p figures logs pickle pickle_detail
 
 # === Cycles to process ===
-for MM in 09; do
+for MM in 02; do
   
   # for DD in 27 28; do
-  for DD in 27; do
+  for DD in 01; do
 	  
     #for HH in {00..23}; do
-    for HH in 06; do
+    for HH in 12; do
 	        
       CYCLE="${YEAR}${MM}${DD}${HH}"
 	  JOBNAME="pygsi_${CYCLE}"
