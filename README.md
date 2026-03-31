@@ -25,6 +25,9 @@ The analysis quantifies how observations (conventional, satellite, etc.) affect 
 | **figures/** | Directory for generated plots. |
 | **pickle/** | Directory for saved pickled summary results. |
 | **logs/** | Directory for Slurm output logs. |
+| **run_GSI_diag_decoder.sh** | Slurm job submission script to run GSI diag decoder for a HRRR-like OSSE. |
+| **HRRR_diag_decoder/** | Fortran program for decoding GSI diag binary files. |
+| **diag_text_out/** | Decoded text files from `HRRR_diag_decoder`. |
 
 ---
 

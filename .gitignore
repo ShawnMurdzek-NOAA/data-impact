@@ -4,6 +4,7 @@ figures
 logs
 pickle
 pickle_detail
+diag_text_out
 pyGSI/__pycache__
 __pycache__
 
@@ -14,3 +15,6 @@ __pycache__
 *.o
 *.mod
 *.x
+
+# Slurm output
+slurm*
