@@ -1,0 +1,7 @@
+ &iosetup
+  infilename='diag_conv_anl.2022050112',
+  outfilename='diag_results.conv_anl',
+  l_obsprvdiag=.false.,
+  dump_pseudo_obs_too=.true.,
+  
+ /     
