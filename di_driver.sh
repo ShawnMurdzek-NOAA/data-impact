@@ -12,6 +12,8 @@ DOMAIN_STR="True"
 SAVE_DETAIL="true"
 #SAVE_DETAIL="false"
 
+# whether netcdf of text diag files are used
+FTYPE='netcdf'
 
 # === Setup output directories ===
 mkdir -p figures logs pickle pickle_detail
@@ -28,7 +30,11 @@ for MM in 02; do
       CYCLE="${YEAR}${MM}${DD}${HH}"
 	  JOBNAME="pygsi_${CYCLE}"
 	  LOGFILE="logs/${JOBNAME}.log"
-	  RRFS_PATH="${DATAPATH}/rrfs.${YEAR}${MM}${DD}"
+	  if [[ ${FTYPE} == 'netcdf' ]]; then
+	    DIAG_PATH="${DATAPATH}/rrfs.${YEAR}${MM}${DD}"
+	  elif [[ $FTYPE} == 'text' ]]; then
+            DIAG_PATH=${DATAPATH}
+	  fi
 
 	  echo "=== Processing cycle ${CYCLE} ==="
 	  echo "  - Data path: ${RRFS_PATH}"
@@ -39,7 +45,7 @@ for MM in 02; do
 	  # submit the job to Slurm
 	  sbatch -J "${JOBNAME}" \
              -o "${LOGFILE}" \
-             --export=YEAR=${YEAR},MONTH=${MM},DAY=${DD},HOUR=${HH},DATAPATH=${RRFS_PATH}/,DOMAIN="${DOMAIN_STR}",SAVE_DETAIL=${SAVE_DETAIL} \
+             --export=YEAR=${YEAR},MONTH=${MM},DAY=${DD},HOUR=${HH},DATAPATH=${DIAG_PATH}/,DOMAIN="${DOMAIN_STR}",SAVE_DETAIL=${SAVE_DETAIL},FTYPE=${FTYPE} \
 	         di_submit_jobs.sh					   			   			
 
     done

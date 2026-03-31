@@ -22,13 +22,14 @@ import os
 import sys
 import numpy as np
 from pyGSI.diags import Conventional
+from pyGSI.diags_text import read_text_diag
 from di_common import plot_jo_histogram, save_legacy_pickle
 import pickle
 
 
-def analyze_conv(yyyy, mm, dd, hh, data_path, domain_str="True", save_detail=False):
+def analyze_conv(yyyy, mm, dd, hh, data_path, domain_str="True", save_detail=False, ftype='netcdf'):
     cycle = f"{yyyy}{mm}{dd}{hh}"
-    sensor_types = ["conv_fed", "conv_ps", "conv_pw", "conv_q", "conv_rw", "conv_sst", "conv_t"]
+    sensor_types = ["fed", "ps", "pw", "q", "rw", "sst", "t"]
 
     n_sensor = len(sensor_types)
     final_total_size = np.zeros(n_sensor)
@@ -38,29 +39,56 @@ def analyze_conv(yyyy, mm, dd, hh, data_path, domain_str="True", save_detail=Fal
     final_max_abs_jo_diff = np.zeros(n_sensor)
 
     for ss, sensor in enumerate(sensor_types):
-        file_prefix = os.path.join(data_path, hh)
-        diag_ges_path = f"{file_prefix}/diag_{sensor}_ges.{cycle}.nc4"
-        diag_anl_path = f"{file_prefix}/diag_{sensor}_anl.{cycle}.nc4"
 
-        if not os.path.exists(diag_ges_path):
-            print(f"[WARN] Missing file for {sensor}: {diag_ges_path}")
-            continue
+        if ftype == 'netcdf':
+            file_prefix = os.path.join(data_path, hh)
+            diag_ges_path = f"{file_prefix}/diag_conv_{sensor}_ges.{cycle}.nc4"
+            diag_anl_path = f"{file_prefix}/diag_conv_{sensor}_anl.{cycle}.nc4"
 
-        print(f"=== Processing {sensor} ===")
+            if not os.path.exists(diag_ges_path):
+                print(f"[WARN] Missing file for {sensor}: {diag_ges_path}")
+                continue
 
-        # --- Load diagnostics ---
-        diag_ges = Conventional(diag_ges_path)
-        diag_anl = Conventional(diag_anl_path)
+            print(f"=== Processing {sensor} ===")
 
-        data_ges = diag_ges.get_data()
-        data_anl = diag_anl.get_data()
-        data_ges_qc = diag_ges.get_data(analysis_use=True)
+            # --- Load diagnostics ---
+            diag_ges = Conventional(diag_ges_path)
+            diag_anl = Conventional(diag_anl_path)
 
-        # --- Data length summary ---
-        print(f"  Length of data, total: {len(data_ges)}")
-        print(f"  Length of data that were assimilated: {len(data_ges_qc['assimilated'])}")
-        print(f"  Length of data that were monitored: {len(data_ges_qc['monitored'])}")
-        print(f"  Length of data that were rejected: {len(data_ges_qc['rejected'])}")
+            data_ges = diag_ges.get_data()
+            data_anl = diag_anl.get_data()
+            data_ges_qc = diag_ges.get_data(analysis_use=True)
+
+            # --- Data length summary ---
+            print(f"  Length of data, total: {len(data_ges)}")
+            print(f"  Length of data that were assimilated: {len(data_ges_qc['assimilated'])}")
+            print(f"  Length of data that were monitored: {len(data_ges_qc['monitored'])}")
+            print(f"  Length of data that were rejected: {len(data_ges_qc['rejected'])}")
+
+        elif ftype == 'text':
+            diag_ges_path = f"{file_prefix}/diag_results_{cycle}_gsiprd.conv_ges"
+            diag_anl_path = f"{file_prefix}/diag_results_{cycle}_gsiprd.conv_anl"
+
+            if not os.path.exists(diag_ges_path):
+                print(f"[WARN] Missing file: {diag_ges_path}")
+                continue
+
+            print(f"=== Processing {sensor} ===")
+
+            # --- Load diagnostics ---
+            diag_ges = read_diag_text(diag_ges_path, ob_class=sensor)
+            diag_anl = read_diag_text(diag_anl_path, ob_class=sensor)
+
+            if (len(diag_ges) == 0) or (len(diag_anl) == 0):
+                print(f"[WARN] Missing sensor: {sensor}")
+                continue
+
+            # --- Data length summary ---
+            print(f"  Length of data, total: {len(data_ges)}")
+            print(f"  Length of data that were assimilated: {np.sum(diag_ges['use_flag_copy'] == 1)}")
+
+        else:
+            raise ValueError(f"ftype option {ftype} is not recognized. Valid options: 'netcdf', 'text'")
 
         # --- Initialize accumulators ---
         jo_diffs, inv_obs_errors = [], []
@@ -169,13 +197,14 @@ def analyze_conv(yyyy, mm, dd, hh, data_path, domain_str="True", save_detail=Fal
     
 if __name__ == "__main__":
     if len(sys.argv) < 6:
-        sys.exit("Usage: di_conv.py YYYY MM DD HH DATAPATH [DOMAIN] [SAVE_DETAIL]")
+        sys.exit("Usage: di_conv.py YYYY MM DD HH DATAPATH [DOMAIN] [SAVE_DETAIL] [FTYPE]")
 
     yyyy, mm, dd, hh, data_path = sys.argv[1:6]
     domain_str  = sys.argv[6] if len(sys.argv) > 6 else "True"
     save_detail = sys.argv[7].lower() in ["true"] if len(sys.argv) > 7 else False
+    ftype = sys.argv[8] if len(sys.argv) > 8 else 'netcdf'
 
     print(f"[INFO] Domain selection string: {domain_str}")
     print(f"[INFO] Save detailed pickle: {save_detail}")
 
-    analyze_conv(yyyy, mm, dd, hh, data_path, domain_str, save_detail)
+    analyze_conv(yyyy, mm, dd, hh, data_path, domain_str, save_detail, ftype)

@@ -11,6 +11,7 @@ shawn.s.murdzek@noaa.gov
 #---------------------------------------------------------------------------------------------------
 
 import pandas as pd
+import numpy as np
 
 
 #---------------------------------------------------------------------------------------------------
@@ -39,7 +40,7 @@ def read_text_diag(fname, ob_class='t'):
             'latitude', 'longitude', 'Pressure', 'Height', 'Analysis_Use_Flag', 
             'tmp0', 'tmp1', 'tmp2', 'tmp3', 'tmp4', 'tmp5']
 
-    df = pd.read_csv(f, sep='\s+', names=cols)
+    df = pd.read_csv(fname, sep='\s+', names=cols)
     df.drop(['null1', 'null2'], axis=1, inplace=True)
     df = df.loc[df['Observation_Class'] == ob_class]
     df.reset_index(drop=True, inplace=True)
@@ -58,13 +59,20 @@ def read_text_diag(fname, ob_class='t'):
         df['err_final'] = df['tmp2']
         df['iusev'] = df['tmp3']
     df.drop(['tmp%d' % i for i in range(6)], axis=1, inplace=True)
-    
+   
+    # Change units of q to kg/kg to match pyGSI
+    if ob_class == 'q':
+        df['observation'] = df['observation'] * 1e-3
+        df['omf_adjusted'] = df['omf_adjusted'] * 1e-3
+        df['err_final'] = df['err_final'] * 1e-3
+
     # Compute inverse obs error
     df['errinv_final'] = np.zeros(len(df))
-    df['errinv_final'][df['err_final'] > 0] = 1. / df['err_final']
+    df.loc[df['err_final'] > 0, 'errinv_final'] = 1. / df['err_final']
 
     # Set multi-dimensional index to match pyGSI output
     df['Observation_Subtype'] = np.ones(len(df)) * np.nan
+    df['use_flag_copy'] = df['Analysis_Use_Flag']
     indices = ['Station_ID', 'Observation_Class', 'Observation_Type',
                'Observation_Subtype', 'Pressure', 'Height',
                'Analysis_Use_Flag']
