@@ -4,6 +4,8 @@
 
 # NOTE: It is assumed that you already have an appropriate Python environment loaded
 
+mkdir -p figures logs pickle pickle_detail
+
 # ==============================================================================
 # Test text diag files
 
@@ -17,7 +19,7 @@ SAVE_DETAIL='true'
 FTYPE='text'
 
 python di_conv.py    $YEAR $MONTH $DAY $HOUR $DATAPATH "$DOMAIN" "$SAVE_DETAIL" "$FTYPE"
-#python di_conv_uv.py $YEAR $MONTH $DAY $HOUR $DATAPATH "$DOMAIN" "$SAVE_DETAIL" "$FTYPE"
+python di_conv_uv.py $YEAR $MONTH $DAY $HOUR $DATAPATH "$DOMAIN" "$SAVE_DETAIL" "$FTYPE"
 
 echo
 echo

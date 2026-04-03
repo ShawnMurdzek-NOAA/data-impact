@@ -90,6 +90,11 @@ def analyze_conv(yyyy, mm, dd, hh, data_path, domain_str="True", save_detail=Fal
         else:
             raise ValueError(f"ftype option {ftype} is not recognized. Valid options: 'netcdf', 'text'")
 
+        # Check that ges and anl files are the same length
+        if len(data_ges) != len(data_anl):
+            print(f"[WARN] Diag files are different lenths for {sensor}. Skipping.")
+            continue
+
         # --- Initialize accumulators ---
         jo_diffs, inv_obs_errors = [], []
         sensor_lon, sensor_lat = [], []
