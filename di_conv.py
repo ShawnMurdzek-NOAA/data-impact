@@ -66,8 +66,8 @@ def analyze_conv(yyyy, mm, dd, hh, data_path, domain_str="True", save_detail=Fal
             print(f"  Length of data that were rejected: {len(data_ges_qc['rejected'])}")
 
         elif ftype == 'text':
-            diag_ges_path = f"{file_prefix}/diag_results_{cycle}_gsiprd.conv_ges"
-            diag_anl_path = f"{file_prefix}/diag_results_{cycle}_gsiprd.conv_anl"
+            diag_ges_path = f"{data_path}/diag_results_{cycle}_gsiprd.conv_ges"
+            diag_anl_path = f"{data_path}/diag_results_{cycle}_gsiprd.conv_anl"
 
             if not os.path.exists(diag_ges_path):
                 print(f"[WARN] Missing file: {diag_ges_path}")
@@ -76,16 +76,16 @@ def analyze_conv(yyyy, mm, dd, hh, data_path, domain_str="True", save_detail=Fal
             print(f"=== Processing {sensor} ===")
 
             # --- Load diagnostics ---
-            diag_ges = read_diag_text(diag_ges_path, ob_class=sensor)
-            diag_anl = read_diag_text(diag_anl_path, ob_class=sensor)
+            data_ges = read_text_diag(diag_ges_path, ob_class=sensor)
+            data_anl = read_text_diag(diag_anl_path, ob_class=sensor)
 
-            if (len(diag_ges) == 0) or (len(diag_anl) == 0):
+            if (len(data_ges) == 0) or (len(data_anl) == 0):
                 print(f"[WARN] Missing sensor: {sensor}")
                 continue
 
             # --- Data length summary ---
             print(f"  Length of data, total: {len(data_ges)}")
-            print(f"  Length of data that were assimilated: {np.sum(diag_ges['use_flag_copy'] == 1)}")
+            print(f"  Length of data that were assimilated: {np.sum(data_ges['use_flag_copy'] == 1)}")
 
         else:
             raise ValueError(f"ftype option {ftype} is not recognized. Valid options: 'netcdf', 'text'")

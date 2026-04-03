@@ -2,7 +2,7 @@
  
 # === User configuration ===
 YEAR=2022
-DATAPATH='/work2/noaa/wrfruc/murdzek/RRFS_OSSE/syn_data_rrfs-workflow_orion/winter/NCO_dirs/ptmp/prod'
+DATAPATH='./test/data'
 
 # please comment out one of them: 1) True, for the entire domain; 2) or a prescribed rectangular sub-domain
 DOMAIN_STR="True" 
