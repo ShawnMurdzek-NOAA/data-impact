@@ -95,6 +95,11 @@ def analyze_conv_uv(yyyy, mm, dd, hh, data_path, domain_str="True", save_detail=
         else:
             raise ValueError(f"ftype option {ftype} is not recognized. Valid options: 'netcdf', 'text'")
 
+        # Check that ges and anl files are the same length
+        if len(data_ges) != len(data_anl):
+            print(f"[WARN] Diag files are different lenths for {sensor}. Skipping.")
+            continue
+
         # --- Initialize accumulators ---
         jo_diffs, inv_obs_errors = [], []
         sensor_lon, sensor_lat = [], []
@@ -167,7 +172,7 @@ def analyze_conv_uv(yyyy, mm, dd, hh, data_path, domain_str="True", save_detail=
             if save_detail:            
                 
                 detail_dir  = "pickle_detail"
-                detail_file = os.path.join(detail_dir, f"{cycle}_{sensor}_detail.pkl")
+                detail_file = os.path.join(detail_dir, f"{cycle}_conv_{sensor}_detail.pkl")
 
                 detail_dict = {
                     "jo_diff": np.array(jo_diffs),

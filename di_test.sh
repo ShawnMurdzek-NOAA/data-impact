@@ -21,6 +21,8 @@ FTYPE='text'
 python di_conv.py    $YEAR $MONTH $DAY $HOUR $DATAPATH "$DOMAIN" "$SAVE_DETAIL" "$FTYPE"
 python di_conv_uv.py $YEAR $MONTH $DAY $HOUR $DATAPATH "$DOMAIN" "$SAVE_DETAIL" "$FTYPE"
 
+python test/check_di_output.py "./" "${YEAR}${MONTH}${DAY}${HOUR}" text
+
 echo
 echo
 
@@ -39,3 +41,5 @@ FTYPE='netcdf'
 
 python di_conv.py    $YEAR $MONTH $DAY $HOUR $DATAPATH "$DOMAIN" "$SAVE_DETAIL" "$FTYPE"
 python di_conv_uv.py $YEAR $MONTH $DAY $HOUR $DATAPATH "$DOMAIN" "$SAVE_DETAIL" "$FTYPE"
+
+python test/check_di_output.py "./" "${YEAR}${MONTH}${DAY}${HOUR}" netcdf
