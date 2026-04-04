@@ -2,7 +2,7 @@
  
 # === User configuration ===
 YEAR=2022
-DATAPATH='/work2/noaa/wrfruc/murdzek/RRFS_OSSE/real_red_data_rrfs-workflow_orion/winter/NCO_dirs/ptmp/prod'
+DATAPATH='/work2/noaa/wrfruc/murdzek/HRRR_OSSE/syn_data_WRF_FCST_OSSE_hercules/spring/WRF_FCST_OSSE/run'
 
 # please comment out one of them: 1) True, for the entire domain; 2) or a prescribed rectangular sub-domain
 DOMAIN_STR="True" 
@@ -13,7 +13,7 @@ SAVE_DETAIL="true"
 #SAVE_DETAIL="false"
 
 # whether netcdf of text diag files are used
-FTYPE='netcdf'
+FTYPE='text'
 
 # === Setup output directories ===
 mkdir -p figures logs pickle pickle_detail
@@ -22,17 +22,17 @@ mkdir -p figures logs pickle pickle_detail
 for MM in 02; do
   
   # for DD in 27 28; do
-  for DD in 01; do
+  for DD in 01 02 03 04 05 06 07; do
 	  
-    #for HH in {00..23}; do
-    for HH in 12; do
+    for HH in {00..23}; do
+    #for HH in 12; do
 	        
       CYCLE="${YEAR}${MM}${DD}${HH}"
 	  JOBNAME="pygsi_${CYCLE}"
 	  LOGFILE="logs/${JOBNAME}.log"
 	  if [[ ${FTYPE} == 'netcdf' ]]; then
 	    DIAG_PATH="${DATAPATH}/rrfs.${YEAR}${MM}${DD}"
-	  elif [[ $FTYPE} == 'text' ]]; then
+	  elif [[ ${FTYPE} == 'text' ]]; then
             DIAG_PATH=${DATAPATH}
 	  fi
 
