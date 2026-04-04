@@ -28,12 +28,24 @@ The analysis quantifies how observations (conventional, satellite, etc.) affect 
 | **run_GSI_diag_decoder.sh** | Slurm job submission script to run GSI diag decoder for a HRRR-like OSSE. |
 | **HRRR_diag_decoder/** | Fortran program for decoding GSI diag binary files. |
 | **diag_text_out/** | Decoded text files from `HRRR_diag_decoder`. |
+| **test/** | Sample data and tests. |
+| **di_test.sh** | Top-level testing script. |
 
 ---
 
 ##  Dependencies
 
 These scripts require a functional python environment (e.g., `pyDAmonitor` module).  They have been tested on NOAA HPC systems Hera and Ursa, with test data staged on both HPC platforms.
+
+## Tests
+
+A simple test using both netCDF and text diag files can be run using the following command after the proper Python environment is loaded:
+
+```
+bash di_test.sh
+```
+
+Additional tests using the `pytest` framework can be found in the `test/` directory.
 
 ##  Running the Analysis
 
