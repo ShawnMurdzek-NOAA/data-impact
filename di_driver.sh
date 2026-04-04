@@ -2,7 +2,7 @@
  
 # === User configuration ===
 YEAR=2022
-DATAPATH='./test/data'
+DATAPATH='/work2/noaa/wrfruc/murdzek/RRFS_OSSE/real_red_data_rrfs-workflow_orion/winter/NCO_dirs/ptmp/prod'
 
 # please comment out one of them: 1) True, for the entire domain; 2) or a prescribed rectangular sub-domain
 DOMAIN_STR="True" 
@@ -37,7 +37,7 @@ for MM in 02; do
 	  fi
 
 	  echo "=== Processing cycle ${CYCLE} ==="
-	  echo "  - Data path: ${RRFS_PATH}"
+	  echo "  - Data path: ${DATAPATH}"
 									
 	  # remove previous log if exists
 	  [ -f "${LOGFILE}" ] && rm -f "${LOGFILE}"
