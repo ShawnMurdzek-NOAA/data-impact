@@ -2,7 +2,7 @@
   
 #SBATCH --partition=hercules
 #SBATCH -n 1
-#SBATCH -t 2:00:00
+#SBATCH -t 00:15:00
 #SBATCH --mem=12g
 #SBATCH -A wrfruc
 #SBATCH -q batch
@@ -21,5 +21,10 @@ conda activate /work2/noaa/wrfruc/murdzek/conda/miniforge_hercules/env/my_py
   
 # Running scripts  
 #python di_sate.py    $YEAR $MONTH $DAY $HOUR $DATAPATH "$DOMAIN" "$SAVE_DETAIL"
-python di_conv.py    $YEAR $MONTH $DAY $HOUR $DATAPATH "$DOMAIN" "$SAVE_DETAIL" "$FTYPE"
-python di_conv_uv.py $YEAR $MONTH $DAY $HOUR $DATAPATH "$DOMAIN" "$SAVE_DETAIL" "$FTYPE"
+python -u di_conv.py    $YEAR $MONTH $DAY $HOUR $DATAPATH "$DOMAIN" "$SAVE_DETAIL" "$FTYPE" "False"
+python -u di_conv_uv.py $YEAR $MONTH $DAY $HOUR $DATAPATH "$DOMAIN" "$SAVE_DETAIL" "$FTYPE" "False"
+
+if [[ ${INC_SPINUP} == 'true' ]]; then
+  python -u di_conv.py    $YEAR $MONTH $DAY $HOUR $DATAPATH "$DOMAIN" "$SAVE_DETAIL" "$FTYPE" "True"
+  python -u di_conv_uv.py $YEAR $MONTH $DAY $HOUR $DATAPATH "$DOMAIN" "$SAVE_DETAIL" "$FTYPE" "True"
+fi

@@ -25,7 +25,8 @@ from di_common import plot_jo_histogram, save_legacy_pickle
 import pickle
 
 
-def analyze_conv_uv(yyyy, mm, dd, hh, data_path, domain_str="True", save_detail=False, ftype='netcdf'):
+def analyze_conv_uv(yyyy, mm, dd, hh, data_path, domain_str="True", save_detail=False, 
+                    ftype='netcdf', spinup=False):
     cycle = f"{yyyy}{mm}{dd}{hh}"
     sensor_types = ["uv"]
 
@@ -36,12 +37,15 @@ def analyze_conv_uv(yyyy, mm, dd, hh, data_path, domain_str="True", save_detail=
     final_sum_jo_diff = np.zeros(n_sensor)
     final_max_abs_jo_diff = np.zeros(n_sensor)
 
+    spinup_tag = ''
+    if spinup: spinup_tag = '_spinup'
+
     for ss, sensor in enumerate(sensor_types):
 
         if ftype == 'netcdf':
             file_prefix = os.path.join(data_path, hh)
-            diag_ges_path = f"{file_prefix}/diag_conv_{sensor}_ges.{cycle}.nc4"
-            diag_anl_path = f"{file_prefix}/diag_conv_{sensor}_anl.{cycle}.nc4"
+            diag_ges_path = f"{file_prefix}{spinup_tag}/diag_conv_{sensor}_ges.{cycle}.nc4"
+            diag_anl_path = f"{file_prefix}{spinup_tag}/diag_conv_{sensor}_anl.{cycle}.nc4"
 
             if not os.path.exists(diag_ges_path):
                 print(f"[WARN] Missing file for {sensor}: {diag_ges_path}")
@@ -69,8 +73,8 @@ def analyze_conv_uv(yyyy, mm, dd, hh, data_path, domain_str="True", save_detail=
             print(f"  Length of data that were rejected: {reject_count}")
 
         elif ftype == 'text':
-            diag_ges_path = f"{data_path}/diag_results_{cycle}_gsiprd.conv_ges"
-            diag_anl_path = f"{data_path}/diag_results_{cycle}_gsiprd.conv_anl"
+            diag_ges_path = f"{data_path}/diag_results_{cycle}_gsiprd{spinup_tag}.conv_ges"
+            diag_anl_path = f"{data_path}/diag_results_{cycle}_gsiprd{spinup_tag}.conv_anl"
 
             if not os.path.exists(diag_ges_path):
                 print(f"[WARN] Missing file: {diag_ges_path}")
@@ -172,7 +176,7 @@ def analyze_conv_uv(yyyy, mm, dd, hh, data_path, domain_str="True", save_detail=
             if save_detail:            
                 
                 detail_dir  = "pickle_detail"
-                detail_file = os.path.join(detail_dir, f"{cycle}_conv_{sensor}_detail.pkl")
+                detail_file = os.path.join(detail_dir, f"{cycle}_conv_{sensor}{spinup_tag}_detail.pkl")
 
                 detail_dict = {
                     "jo_diff": np.array(jo_diffs),
@@ -187,7 +191,7 @@ def analyze_conv_uv(yyyy, mm, dd, hh, data_path, domain_str="True", save_detail=
                     pickle.dump(detail_dict, f, protocol=pickle.HIGHEST_PROTOCOL)
 
             # --- Continue with your normal workflow ---                        
-            plot_jo_histogram(sensor, yyyy, mm, dd, hh,
+            plot_jo_histogram(f"{sensor}{spinup_tag}", yyyy, mm, dd, hh,
                               jo_diffs, inv_obs_errors,
                               count_assim, count_large, count_zero,
                               data_anl, cycle)
@@ -206,18 +210,22 @@ def analyze_conv_uv(yyyy, mm, dd, hh, data_path, domain_str="True", save_detail=
                        final_mean_jo_diff,
                        final_sum_jo_diff,
                        final_max_abs_jo_diff,
-                       cycle, label="conv_uv")
+                       cycle, label=f"conv_uv{spinup_tag}")
 
 
 if __name__ == "__main__":
     if len(sys.argv) < 6:
-        sys.exit("Usage: di_conv_uv.py YYYY MM DD HH DATAPATH [DOMAIN] [SAVE_DETAIL] [FTYPE]")
+        sys.exit("Usage: di_conv_uv.py YYYY MM DD HH DATAPATH [DOMAIN] [SAVE_DETAIL] [FTYPE] [SPINUP]")
 
     yyyy, mm, dd, hh, data_path = sys.argv[1:6]
     domain_str  = sys.argv[6] if len(sys.argv) > 6 else "True"
     save_detail = sys.argv[7].lower() in ["true"] if len(sys.argv) > 7 else False
     ftype = sys.argv[8] if len(sys.argv) > 8 else 'netcdf'
+    spinup = sys.argv[9].lower() in ["true"] if len(sys.argv) > 9 else False
 
     print(f"[INFO] Domain selection string: {domain_str}")
     print(f"[INFO] Save detailed pickle: {save_detail}")
-    analyze_conv_uv(yyyy, mm, dd, hh, data_path, domain_str, save_detail, ftype)
+    print(f"[INFO] File type: {ftype}")
+    print(f"[INFO] Spinup?: {spinup}")
+
+    analyze_conv_uv(yyyy, mm, dd, hh, data_path, domain_str, save_detail, ftype, spinup)

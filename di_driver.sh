@@ -2,7 +2,7 @@
  
 # === User configuration ===
 YEAR=2022
-DATAPATH='/work2/noaa/wrfruc/murdzek/HRRR_OSSE/syn_data_WRF_FCST_OSSE_hercules/spring/WRF_FCST_OSSE/run'
+DATAPATH='/work2/noaa/wrfruc/murdzek/HRRR_OSSE/todling_obs_impact/syn_data_WRF_FCST_OSSE_hercules/winter/data-impact/diag_text_out'
 
 # please comment out one of them: 1) True, for the entire domain; 2) or a prescribed rectangular sub-domain
 DOMAIN_STR="True" 
@@ -15,6 +15,9 @@ SAVE_DETAIL="true"
 # whether netcdf of text diag files are used
 FTYPE='text'
 
+# option to include spinup cycles
+INC_SPINUP='true'
+
 # === Setup output directories ===
 mkdir -p figures logs pickle pickle_detail
 
@@ -22,10 +25,10 @@ mkdir -p figures logs pickle pickle_detail
 for MM in 02; do
   
   # for DD in 27 28; do
-  for DD in 01 02 03 04 05 06 07; do
+  for DD in 02; do
 	  
-    for HH in {00..23}; do
-    #for HH in 12; do
+    #for HH in {00..23}; do
+    for HH in 18; do
 	        
       CYCLE="${YEAR}${MM}${DD}${HH}"
 	  JOBNAME="pygsi_${CYCLE}"
@@ -45,7 +48,7 @@ for MM in 02; do
 	  # submit the job to Slurm
 	  sbatch -J "${JOBNAME}" \
              -o "${LOGFILE}" \
-             --export=YEAR=${YEAR},MONTH=${MM},DAY=${DD},HOUR=${HH},DATAPATH=${DIAG_PATH}/,DOMAIN="${DOMAIN_STR}",SAVE_DETAIL=${SAVE_DETAIL},FTYPE=${FTYPE} \
+             --export=YEAR=${YEAR},MONTH=${MM},DAY=${DD},HOUR=${HH},DATAPATH=${DIAG_PATH}/,DOMAIN="${DOMAIN_STR}",SAVE_DETAIL=${SAVE_DETAIL},FTYPE=${FTYPE},INC_SPINUP=${INC_SPINUP} \
 	         di_submit_jobs.sh					   			   			
 
     done

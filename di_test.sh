@@ -17,9 +17,10 @@ DATAPATH='./test/data'
 DOMAIN='True'
 SAVE_DETAIL='true'
 FTYPE='text'
+SPINUP='false'
 
-python di_conv.py    $YEAR $MONTH $DAY $HOUR $DATAPATH "$DOMAIN" "$SAVE_DETAIL" "$FTYPE"
-python di_conv_uv.py $YEAR $MONTH $DAY $HOUR $DATAPATH "$DOMAIN" "$SAVE_DETAIL" "$FTYPE"
+python di_conv.py    $YEAR $MONTH $DAY $HOUR $DATAPATH "$DOMAIN" "$SAVE_DETAIL" "$FTYPE" "${SPINUP}"
+python di_conv_uv.py $YEAR $MONTH $DAY $HOUR $DATAPATH "$DOMAIN" "$SAVE_DETAIL" "$FTYPE" "${SPINUP}"
 
 python test/check_di_output.py "./" "${YEAR}${MONTH}${DAY}${HOUR}" text
 
@@ -38,8 +39,9 @@ DATAPATH='./test/data'
 DOMAIN='True'
 SAVE_DETAIL='true'
 FTYPE='netcdf'
+SPINUP='false'
 
-python di_conv.py    $YEAR $MONTH $DAY $HOUR $DATAPATH "$DOMAIN" "$SAVE_DETAIL" "$FTYPE"
-python di_conv_uv.py $YEAR $MONTH $DAY $HOUR $DATAPATH "$DOMAIN" "$SAVE_DETAIL" "$FTYPE"
+python di_conv.py    $YEAR $MONTH $DAY $HOUR $DATAPATH "$DOMAIN" "$SAVE_DETAIL" "$FTYPE" "${SPINUP}"
+python di_conv_uv.py $YEAR $MONTH $DAY $HOUR $DATAPATH "$DOMAIN" "$SAVE_DETAIL" "$FTYPE" "${SPINUP}"
 
 python test/check_di_output.py "./" "${YEAR}${MONTH}${DAY}${HOUR}" netcdf
