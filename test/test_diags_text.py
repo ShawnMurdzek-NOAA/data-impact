@@ -31,15 +31,23 @@ class TestDiagT():
     @pytest.fixture(scope='class')
     def sample_diag_t(self):
         fname = './data/diag_results_2022020512_gsiprd.conv_ges'
-        return diags_text.read_text_diag(fname, ob_class='t')
+        return diags_text.read_text_diag(fname, ob_class='t', keep_pseudo_obs=False)
 
     
-    def test_df_len(self, sample_diag_t):
+    def test_pseudo_ob_removal(self, sample_diag_t):
         """
-        Check DataFrame length
+        Assert that all pseudo obs have been removed
         """
 
-        assert len(sample_diag_t) == 15
+        subtypes = []
+        for i in range(len(sample_diag_t)):
+            s = sample_diag_t.iloc[i].name[3]
+            if s not in subtypes:
+                subtypes.append(s)
+        subtypes = np.array(subtypes)
+
+        assert len(subtypes) == 1
+        assert subtypes[0] == 0 
 
 
     def test_col_names(self, sample_diag_t):
@@ -63,9 +71,9 @@ class TestDiagT():
         """
 
         row = sample_diag_t.iloc[0]
-        assert row.name[0] == 'KSBA'
-        assert np.isclose(row['observation'], 275.94)
-        assert np.isclose(row['omf_adjusted'], -7.39)
+        assert row.name[0] == 'KNSI'
+        assert np.isclose(row['observation'], 283.16)
+        assert np.isclose(row['omf_adjusted'], 0.06)
         assert np.isclose(row['err_final'], 1.1293)
 
 
@@ -74,17 +82,9 @@ class TestDiagUV():
     @pytest.fixture(scope='class')
     def sample_diag_uv(self):
         fname = './data/diag_results_2022020512_gsiprd.conv_ges'
-        return diags_text.read_text_diag(fname, ob_class='uv')
+        return diags_text.read_text_diag(fname, ob_class='uv', keep_pseudo_obs=False)
 
     
-    def test_df_len(self, sample_diag_uv):
-        """
-        Check DataFrame length
-        """
-
-        assert len(sample_diag_uv) == 15
-
-
     def test_col_names(self, sample_diag_uv):
         """
         Check that column names are correct
@@ -107,12 +107,12 @@ class TestDiagUV():
         """
 
         row = sample_diag_uv.iloc[0]
-        assert row.name[0] == 'KSBA'
-        assert np.isclose(row['u_observation'], 0)
-        assert np.isclose(row['u_omf_adjusted'], -0.06)
-        assert np.isclose(row['v_observation'], 0)
-        assert np.isclose(row['v_omf_adjusted'], 0.46)
-        assert np.isclose(row['err_final'], 1.6503)
+        assert row.name[0] == 'KNSI'
+        assert np.isclose(row['u_observation'], -1.40)
+        assert np.isclose(row['u_omf_adjusted'], 1.42)
+        assert np.isclose(row['v_observation'], -2.20)
+        assert np.isclose(row['v_omf_adjusted'], -0.30)
+        assert np.isclose(row['err_final'], 1.6401)
 
 
 """

@@ -121,8 +121,14 @@ def analyze_conv_uv(yyyy, mm, dd, hh, data_path, domain_str="True", save_detail=
             #indices = ['Station_ID', 'Observation_Class', 'Observation_Type',
             #           'Observation_Subtype', 'Pressure', 'Height',
             #           'Analysis_Use_Flag']         
-            
+
             ges, anl = data_ges.iloc[i], data_anl.iloc[i]
+
+            # Check that we have the same observation
+            if ges.name[:4] != anl.name[:4]:
+                print(f"[WARN] Row {i}. ges.name[:4] = {ges.name[:4]} does not match anl.name[:4]. Skipping.")
+                continue
+            
             inv_err = anl["errinv_final"]
             if inv_err == 0:
                 continue

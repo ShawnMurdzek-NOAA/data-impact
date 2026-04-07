@@ -2,7 +2,7 @@
 
 #SBATCH --partition=hercules
 #SBATCH -n 1
-#SBATCH -t 1:00:00
+#SBATCH -t 0:15:00
 #SBATCH -A wrfruc
 
 # Shell script to run GSI diag decoder on a WRF_FCST_OSSE simulation

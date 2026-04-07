@@ -18,7 +18,7 @@ import numpy as np
 # Functions
 #---------------------------------------------------------------------------------------------------
 
-def read_text_diag(fname, ob_class='t'):
+def read_text_diag(fname, ob_class='t', keep_pseudo_obs=False):
     """
     Read a text-based GSI diag files and save into a DataFrame
 
@@ -28,6 +28,8 @@ def read_text_diag(fname, ob_class='t'):
         GSI diag file name
     ob_class : string
         Observation class to read (e.g., 't', 'q', 'uv')
+    keep_pseudo_obs : boolean
+        Option to keep pseudo obs (subtype = -1)
 
     Returns
     -------
@@ -36,14 +38,20 @@ def read_text_diag(fname, ob_class='t'):
 
     """
 
-    cols = ['Observation_Class', 'null1', 'Station_ID', 'null2', 'Observation_Type', 'time', 
-            'latitude', 'longitude', 'Pressure', 'Height', 'Analysis_Use_Flag', 
+    cols = ['Observation_Class', 'null1', 'Station_ID', 'null2', 'Observation_Type', 
+            'Observation_Subtype', 'time', 'latitude', 'longitude', 'Pressure', 
+            'Height', 'Analysis_Use_Flag', 
             'tmp0', 'tmp1', 'tmp2', 'tmp3', 'tmp4', 'tmp5']
 
     df = pd.read_csv(fname, sep='\s+', names=cols)
     df.drop(['null1', 'null2'], axis=1, inplace=True)
     df = df.loc[df['Observation_Class'] == ob_class]
     df.reset_index(drop=True, inplace=True)
+
+    # Drop pseudo obs
+    if not keep_pseudo_obs:
+        df = df.loc[df['Observation_Subtype'] != -1, :]
+        df.reset_index(drop=True, inplace=True)
 
     # Extract obs, O-F, and err
     if ob_class == 'uv':
@@ -71,7 +79,6 @@ def read_text_diag(fname, ob_class='t'):
     df.loc[df['err_final'] > 0, 'errinv_final'] = 1. / df['err_final']
 
     # Set multi-dimensional index to match pyGSI output
-    df['Observation_Subtype'] = np.ones(len(df)) * np.nan
     df['use_flag_copy'] = df['Analysis_Use_Flag']
     indices = ['Station_ID', 'Observation_Class', 'Observation_Type',
                'Observation_Subtype', 'Pressure', 'Height',
