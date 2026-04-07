@@ -83,5 +83,12 @@ If the pickle files have already been generated (from `di_conv.py`, `di_conv_uv.
 
 ```bash
 python scripts/generate_data_impact_figures.py --case sub-domain --mode both
+```
 
+---
 
+## Other Notes
+
+### Pseudo Observations
+
+GSI diag text files can contain information about pseudo observations (subtype = -1) in addition to regular observations. This information is only available in the `ges` diag files, so the data impact metric cannot be computed. Therefore, if pseudo observations are present, they are automatically filtered out when reading in the GSI diag text files.
