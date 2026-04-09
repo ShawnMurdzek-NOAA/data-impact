@@ -72,9 +72,9 @@ class TestDiagT():
 
         row = sample_diag_t.iloc[0]
         assert row.name[0] == 'KNSI'
-        assert np.isclose(row['observation'], 283.16)
-        assert np.isclose(row['omf_adjusted'], 0.06)
-        assert np.isclose(row['err_final'], 1.1293)
+        assert np.isclose(row['observation'], 283.155)
+        assert np.isclose(row['omf_adjusted'], 0.062625)
+        assert np.isclose(row['err_final'], 1.12925)
 
 
 class TestDiagUV():
@@ -109,9 +109,9 @@ class TestDiagUV():
         row = sample_diag_uv.iloc[0]
         assert row.name[0] == 'KNSI'
         assert np.isclose(row['u_observation'], -1.40)
-        assert np.isclose(row['u_omf_adjusted'], 1.42)
+        assert np.isclose(row['u_omf_adjusted'], 1.41954)
         assert np.isclose(row['v_observation'], -2.20)
-        assert np.isclose(row['v_omf_adjusted'], -0.30)
+        assert np.isclose(row['v_omf_adjusted'], -0.29562)
         assert np.isclose(row['err_final'], 1.6401)
 
 

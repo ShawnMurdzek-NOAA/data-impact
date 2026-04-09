@@ -259,24 +259,24 @@ PROGRAM read_diag_conv
 !  write out result for one variable on one pitch
              if (l_obsprvdiag) then       ! write out obs provider info with other info together 
                if ( var .ne. " uv" .and. isubtype0 >=0 ) then
-                 write (42,'(A3,1x,A8,1x,A8,1x,A8,1x,I3,1x,I3,1x,F10.2,F8.2,F8.2,2F20.5,I5,2E15.5,1x,"NaN  NaN   ",E15.5,F10.3)') &
+                 write (42,'(A3,1x,A8,1x,A8,1x,A8,1x,I3,1x,I3,1x,F10.2,F8.2,F8.2,2F20.5,I5,2E15.5,1x,"NaN  NaN   ",E16.6,F10.3)') &
                    var,stationID,cprovider,csubprovider,itype,isubtype,rdhr,rlat,rlon,rprs,rhgt,iuse,robs1,ddiff,rerr,iusev
                else if ( var .eq. " uv" .and. isubtype0 >=0 ) then
 !  ** When the data is uv, additional output is needed **/
                  robs2=rdiagbuf(20,i)
                  rdpt2=rdiagbuf(21,i)
-                 write (42,'(A3,1x,A8,1x,A8,1x,A8,1x,I3,1x,I3,1x,F10.2,F8.2,F8.2,2F20.5,I5,4E15.5,1x,E15.5,F10.3)') &
+                 write (42,'(A3,1x,A8,1x,A8,1x,A8,1x,I3,1x,I3,1x,F10.2,F8.2,F8.2,2F20.5,I5,4E15.5,1x,E16.6,F10.3)') &
                    var,stationID,cprovider,csubprovider,itype,isubtype,rdhr,rlat,rlon,rprs,rhgt,iuse,robs1,ddiff,robs2,rdpt2,rerr,iusev
                endif
              else   ! if no need to write out obs provider info
                if (var .ne. " uv") then
-                 write (42,'(A3," @ ",A8," : ",2I3,F10.2,F8.2,F8.2,F8.2,F20.2,I5,2F10.2,E15.5,F10.3)') &
+                 write (42,'(A3," @ ",A8," : ",2I3,F10.2,F8.2,F8.2,F8.2,F20.2,I5,2E18.6,E16.6,F10.3)') &
                    var,stationID,itype,isubtype,rdhr,rlat,rlon,rprs,rhgt,iuse,robs1,ddiff,rerr,iusev
                else
 !  ** When the data is uv, additional output is needed **/
                  robs2=rdiagbuf(20,i)
                  rdpt2=rdiagbuf(21,i)
-                 write (42,'(A3," @ ",A8," : ",2I3,F10.2,F8.2,F8.2,F8.2,F20.2,I5,4F10.2,E15.5,F10.3)') &
+                 write (42,'(A3," @ ",A8," : ",2I3,F10.2,F8.2,F8.2,F8.2,F20.2,I5,4E18.6,E16.6,F10.3)') &
                    var,stationID,itype,isubtype,rdhr,rlat,rlon,rprs,rhgt,iuse,robs1,ddiff,robs2,rdpt2,rerr,iusev
                endif
              endif

@@ -1,6 +1,8 @@
 """
 Make test text diag files
 
+Test data come from syn_data_WRF_FCST_OSSE_hercules/winter
+
 shawn.s.murdzek@noaa.gov
 """
 
