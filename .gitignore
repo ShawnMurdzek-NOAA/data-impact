@@ -1,6 +1,7 @@
 
 # Directories created when code is run
 figures
+figures_post
 logs
 pickle
 pickle_detail
