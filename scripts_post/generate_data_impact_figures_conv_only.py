@@ -132,6 +132,41 @@ def plot_total_summary(
 
 
 # ==========================================================
+#  Dump Total Output
+# ==========================================================
+def dump_total_summary(
+    case_str,
+    datestr_len,
+    all_sensor_type,
+    alltime_sum_jo_diff,
+    alltime_assim_size,
+    outdir,
+    spinup,
+):
+    """Dump total amounts to a text file"""
+
+    if spinup == 1:
+        spinup_str = '_spinup'
+    else:
+        spinup_str = ''
+    fname = f"{outdir}/total_out{spinup_str}.txt"
+
+    with open(fname, 'w') as fptr:
+        col_names = ['variable', 'tot_count', 'tot_impact', 'impact_per_ob', 'ncyc']
+        w = 20
+
+        # Write header
+        hdr = ''
+        for c in col_names:
+            hdr = hdr + f"{c:<{w}}"
+        fptr.write(hdr+'\n')
+
+        # Write data
+        for v, n, jo in zip(all_sensor_type, alltime_assim_size, alltime_sum_jo_diff):
+            fptr.write(f"{v:<{w}}{n:<{w}d}{jo:<{w}.1f}{jo/n:<{w}.2f}{datestr_len:<{w}d}\n")
+
+
+# ==========================================================
 #  Main Function
 # ==========================================================
 def main(start, end, case_str, mode="each", spinup=0, 
@@ -241,6 +276,15 @@ def main(start, end, case_str, mode="each", spinup=0,
             alltime_sum_jo_diff,
             alltime_assim_size,
             alltime_colors,
+            fig_dir,
+            spinup,
+        )
+        dump_total_summary(
+            case_str,
+            ncyc,
+            alltime_sensor_type,
+            alltime_sum_jo_diff,
+            alltime_assim_size,
             fig_dir,
             spinup,
         )
